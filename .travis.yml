@@ -13,6 +13,7 @@ script:
 - ls
 
 - ctest
+- cmake --build . --target package
 
 deploy:
   provider: script
