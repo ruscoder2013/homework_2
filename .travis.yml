@@ -10,7 +10,7 @@ script:
 - cd build
 - cmake ..
 - cmake --build .
-- ./main
+- ls
 
 - ctest
 
