@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(allocator)
+project(main VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 
 # Download and build googletest
 # @see https://github.com/google/googletest/blob/master/googletest/README.md
