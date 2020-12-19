@@ -22,13 +22,12 @@ struct map_allocator {
     map_allocator() {
         mem_p = nullptr;
         next_mem = 0;
-        container_size = N;
-        chunk_size = 0;
-        count = 0;
     }
     ~map_allocator() {
-        for(const auto& addr: chunck_addrs)
-            std::free(addr);
+        if (mem_p) {
+            std::free(mem_p);
+            mem_p = nullptr;
+        }
     }
 
     template<typename U, int M> 
@@ -36,19 +35,13 @@ struct map_allocator {
 
     void* mem_p;
     int next_mem;
-    int count;
-    int chunk_size;
-    int container_size;
-    std::stack<T*> free_addr;
-    std::vector<void*> chunck_addrs;
 
     T *allocate(std::size_t n) {
         void* addr = 0;
-        if (next_mem==container_size)
+        if ((next_mem+n)>N)
             throw std::bad_alloc();
         if (mem_p == nullptr)
         {
-            container_size = N;
             mem_p = std::malloc(N * sizeof(T));
             if (!mem_p)
                 throw std::bad_alloc();
@@ -63,10 +56,8 @@ struct map_allocator {
     }
 
     void deallocate(T *p, std::size_t n) {
-        if (mem_p) {
-            std::free(mem_p);
-            mem_p = nullptr;
-        }
+        (void)p;
+        (void)n;
     }
 
     template<typename U, typename ...Args>
@@ -127,6 +118,10 @@ private:
 };
 
 int main() {
+    auto m1 = std::map<int, int>{};
+    for(int i = 0; i < 10; i++)
+        m1[i] = fact(i);  
+
     auto m2 = std::map<int,int,std::less<int>,
         map_allocator<std::pair<const int, int>, 10>
      >{};
@@ -135,13 +130,17 @@ int main() {
         m2[i] = fact(i);
 
     for(auto const &mm : m2)
-        std::cout << mm.first << " " << mm.second << std::endl;
-        
+        std::cout << mm.first << " " << mm.second << std::endl; 
+
     Buffer<int, map_allocator<int, 10>> buffer(10);
     for (int i = 0; i < 10; ++i)
         buffer.add(fact(i));
-    for(int i = 0; i < buffer.get_size(); i++)
+    for(unsigned int i = 0; i < buffer.get_size(); i++)
         std::cout << *buffer.at(i) << std::endl;
-        
-    return 0;
+
+    Buffer<int> buffer_2(10);
+    for (int i = 0; i < 10; ++i)
+        buffer_2.add(fact(i));
+    for(unsigned int i = 0; i < buffer_2.get_size(); i++)
+        std::cout << *buffer_2.at(i) << std::endl;
 }
