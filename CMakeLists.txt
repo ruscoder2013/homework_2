@@ -10,17 +10,9 @@ if (MSVC)
             main PRIVATE
             /W4
     )
-    target_compile_options(
-            test_list PRIVATE
-            /W4
-    )
 else ()
     target_compile_options(
             main PRIVATE
-            -Wall -Wextra -pedantic -Werror
-    )
-    target_compile_options(
-            test_list PRIVATE
             -Wall -Wextra -pedantic -Werror
     )
 endif()
