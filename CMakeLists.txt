@@ -37,28 +37,8 @@ endif()
 
 enable_testing()
 
-add_executable(main main.cpp map_allocator.h)
+add_executable(main main.cpp)
 set_target_properties(main PROPERTIES CXX_STANDARD 14 CXX_STANDARD_REQUIRED ON)
-
-add_executable(
-        test_list
-        map_allocator.h
-        test_list.cpp
-)
-
-set_target_properties(test_list PROPERTIES CXX_STANDARD 14 CXX_STANDARD_REQUIRED ON)
-
-# Add src to the include directories for the test target
-target_include_directories(
-        test_list PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}"
-)
-
-# Link test target against gtest libraries
-target_link_libraries(
-        test_list PRIVATE
-        gtest gtest_main
-)
 
 if (MSVC)
     target_compile_options(
@@ -79,8 +59,6 @@ else ()
             -Wall -Wextra -pedantic -Werror
     )
 endif()
-
-add_test( test_list test_list )
 
 set(CPACK_GENERATOR DEB)
 
